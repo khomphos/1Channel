@@ -25,6 +25,8 @@ from db_utils import DB_Connection
 
 ADDON = xbmcaddon.Addon(id='plugin.video.1channel')
 utils.log('Service: Installed Version: %s' % (ADDON.getAddonInfo('version')))
+LASTPLAYEDFILE = "/var/mobile/Library/Preferences/Kodi/userdata/lastplayed.txt"
+TMPLASTPLAY =  "/var/mobile/Library/Preferences/Kodi/userdata/lastplayedtmp.txt"
 
 db_connection = DB_Connection()
 db_connection.init_database()
@@ -60,6 +62,12 @@ class Service(xbmc.Player):
 
     def onPlayBackStarted(self):
         utils.log('Service: Playback started')
+        file = open(TMPLASTPLAY, 'r')
+        for line in file:
+            lastplayedurl = line
+            fileTMP = open(LASTPLAYEDFILE,"a")
+            fileTMP.write(lastplayedurl)
+            fileTMP.close
         meta = self.win.getProperty('1ch.playing')
         if meta:  # Playback is ours
             utils.log('Service: tracking progress...')
