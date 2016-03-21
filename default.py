@@ -45,6 +45,11 @@ import gui_utils
 
 global urlresolver
 
+LASTPLAYEDFILE = "/var/mobile/Library/Preferences/Kodi/userdata/lastplayed.txt"
+TMPLASTPLAY =  "/var/mobile/Library/Preferences/Kodi/userdata/lastplayedtmp.txt"
+def build_url(query):
+    return base_url + '?' + urllib.urlencode(query)
+    
 _1CH = Addon('plugin.video.1channel', sys.argv)
 
 META_ON = _1CH.get_setting('use-meta') == 'true'
@@ -340,6 +345,11 @@ def auto_try_sources(hosters, title, img, year, imdbnum, video_type, season, epi
 def PlaySource(url, title, video_type, primewire_url, resume, imdbnum='', year='', season='', episode='', dbid=None):
     utils.log('Attempting to play url: %s' % url)
     stream_url = urlresolver.HostedMediaFile(url=url).resolve()
+    utils.log('Adding to last played tmp file %s' % url)
+    file = open(TMPLASTPLAY,"w")
+    DELIM="||"
+    file.write(url + DELIM + title + DELIM + video_type + DELIM + primewire_url + DELIM + str(resume) )
+    file.close
 
     # If urlresolver returns false then the video url was not resolved.
     if not stream_url or not isinstance(stream_url, basestring):
@@ -648,6 +658,9 @@ def AddonMenu():  # homescreen
                        fanart=art('fanart.png'))
     _1CH.add_directory({'mode': MODES.PLAYLISTS_MENU, 'section': 'playlist'}, {'title': i18n('playlists')}, img=art('playlists.png'),
                        fanart=art('fanart.png'))
+    lastplayedFolder = build_url({'mode': MODES.LAST_PLAYED, 'foldername': 'Last Played'})
+    li = xbmcgui.ListItem('Last Played', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=lastplayedFolder, listitem=li, isFolder=True)
 
     if _1CH.get_setting('h99_hidden') == 'true':
         _1CH.add_directory({'mode': MODES.FILTER_RESULTS, 'section': 'tv', 'sort': 'date'}, {'title': 'TV - Date added'}, img=art('date_added.png'), fanart=art('fanart.png'))
@@ -707,6 +720,29 @@ def BrowseListMenu(section):
 
     utils.set_view('list', '%s-view' % ('default'))
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+@pw_dispatcher.register(MODES.LAST_PLAYED)
+def lastplayed_menu():
+    utils.log('Last Played Menu')
+
+    file = open(LASTPLAYEDFILE, 'r')
+    #utils.log('FILE OPENED')
+    for line in file:
+        #utils.log('Line read'+line)
+        parts = line.split("||")
+
+        #file.write(url + DELIM + title + DELIM + video_type + DELIM + primewire_url + DELIM + resume )
+        url=parts[0]
+        title=parts[1]
+        video_type=parts[2]
+        primewire_url=parts[3]
+        resume=parts[4]
+        #utils.log('split to title:' + title + ' and url ' + url)
+        #li = xbmcgui.ListItem(primewire_url+title, iconImage='DefaultVideo.png')
+        #xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
+        _1CH.add_directory({'mode': MODES.PLAY_SOURCE, 'url': url, 'title': title,'img': '', 'year':'' , 'imdbnum': '','video_type': video_type, 'season': '', 'episode': '', 'primewire_url': primewire_url, 'resume': resume}, infolabels={'title': title+"|"+primewire_url+"|"+url}, properties={}, is_folder=False, img='', fanart=art('fanart.png'), total_items=1)
+
+    xbmcplugin.endOfDirectory(addon_handle)
 
 @pw_dispatcher.register(MODES.PLAYLISTS_MENU)
 def playlist_menu():
