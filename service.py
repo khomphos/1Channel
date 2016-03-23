@@ -64,7 +64,7 @@ class Service(xbmc.Player):
         utils.log('Service: Playback started')
         file = open(TMPLASTPLAY, 'r')
         for line in file:
-            lastplayedurl = line
+            lastplayedurl = line + '\n'
             fileTMP = open(LASTPLAYEDFILE,"a")
             fileTMP.write(lastplayedurl)
             fileTMP.close
