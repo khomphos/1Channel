@@ -343,7 +343,7 @@ def auto_try_sources(hosters, title, img, year, imdbnum, video_type, season, epi
 
 @pw_dispatcher.register(MODES.PLAY_SOURCE, ['url', ' title', 'video_type', 'primewire_url', 'resume'], ['imdbnum', 'year', 'season', 'episode'])
 def PlaySource(url, title, video_type, primewire_url, resume, imdbnum='', year='', season='', episode='', dbid=None):
-    utils.log('Attempting to play url: %s' % url)
+   last utils.log('Attempting to play url: %s' % url)
     stream_url = urlresolver.HostedMediaFile(url=url).resolve()
     utils.log('Adding to last played tmp file %s' % url)
     file = open(TMPLASTPLAY,"w")
@@ -723,7 +723,7 @@ def BrowseListMenu(section):
 
 @pw_dispatcher.register(MODES.LAST_PLAYED)
 def lastplayed_menu():
-    utils.log('Last Played Menu')
+   utils.log('Last Played Menu')
 
     file = open(LASTPLAYEDFILE, 'r')
     #utils.log('FILE OPENED')
@@ -732,16 +732,15 @@ def lastplayed_menu():
         parts = line.split("||")
 
         #file.write(url + DELIM + title + DELIM + video_type + DELIM + primewire_url + DELIM + resume )
-        url=parts[0]
-        title=parts[1]
-        video_type=parts[2]
-        primewire_url=parts[3]
-        resume=parts[4]
-        #utils.log('split to title:' + title + ' and url ' + url)
-        #li = xbmcgui.ListItem(primewire_url+title, iconImage='DefaultVideo.png')
-        #xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
-        _1CH.add_directory({'mode': MODES.PLAY_SOURCE, 'url': url, 'title': title,'img': '', 'year':'' , 'imdbnum': '','video_type': video_type, 'season': '', 'episode': '', 'primewire_url': primewire_url, 'resume': resume}, infolabels={'title': title+"|"+primewire_url+"|"+url}, properties={}, is_folder=False, img='', fanart=art('fanart.png'), total_items=1)
-
+        if len(parts) == 5:
+                url=parts[0]
+                title=parts[1]
+                video_type=parts[2]
+                primewire_url=parts[3]
+                resume=parts[4]
+                utils.log('Last Played  title:' + title + ' and url ' + url)
+                _1CH.add_directory({'mode': MODES.PLAY_SOURCE, 'url': url, 'title': title,'img': '', 'year':'' , 'imdbnum': '','video_type': video_type, 'season': '', 'episode': '', 'primewire_url': primewire_url, 'resume': resume}, infolabels={'title': title+"|"+primewire_url+"|"+url}, properties={}, is_folder=False, img='', fanart=art('fanart.png'), total_items=1)
+                
     xbmcplugin.endOfDirectory(addon_handle)
 
 @pw_dispatcher.register(MODES.PLAYLISTS_MENU)
