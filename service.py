@@ -61,13 +61,24 @@ class Service(xbmc.Player):
         self.imdb_id = None
 
     def onPlayBackStarted(self):
-        utils.log('Service: Playback started')
-        file = open(TMPLASTPLAY, 'r')
-        for line in file:
-            lastplayedurl = line + '\n'
-            fileTMP = open(LASTPLAYEDFILE,"a")
-            fileTMP.write(lastplayedurl)
-            fileTMP.close
+        utils.log('Service: Playback started...meta info ahead')
+        HISTORYCOUNT=20
+        with open(TMPLASTPLAY, 'r') as tmpfile:
+                lastplayedurl = tmpfile.read()+'\n'
+                tmpfile.close
+
+        with open(LASTPLAYEDFILE, 'r') as historyfile:
+            history=historyfile.readlines(HISTORYCOUNT)
+            historyfile.close
+
+        utils.log('Adding last play item '+lastplayedurl )
+
+        with open(LASTPLAYEDFILE,"w") as fileLASTPLAYED:
+                fileLASTPLAYED.write(lastplayedurl)
+                for lines in history:
+                        fileLASTPLAYED.write(lines)
+                fileLASTPLAYED.close
+                
         meta = self.win.getProperty('1ch.playing')
         if meta:  # Playback is ours
             utils.log('Service: tracking progress...')
