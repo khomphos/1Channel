@@ -730,24 +730,24 @@ def BrowseListMenu(section):
 @pw_dispatcher.register(MODES.LAST_PLAYED)
 def lastplayed_menu():
     utils.log('Last Played Menu')
-
-    file = open(LASTPLAYEDFILE, 'r')
-    #utils.log('FILE OPENED')
-    for line in file:
-        #utils.log('Line read'+line)
-        parts = line.split("||")
-
-        #file.write(url + DELIM + title + DELIM + video_type + DELIM + primewire_url + DELIM + resume )
-        if len(parts) == 5:
-                url=parts[0]
-                title=parts[1]
-                video_type=parts[2]
-                primewire_url=parts[3]
-                resume=parts[4]
-                utils.log('Last Played  title:' + title + ' and url ' + url)
-                _1CH.add_directory({'mode': MODES.PLAY_SOURCE, 'url': url, 'title': title,'img': '', 'year':'' , 'imdbnum': '','video_type': video_type, 'season': '', 'episode': '', 'primewire_url': primewire_url, 'resume': resume}, infolabels={'title': title+"|"+primewire_url+"|"+url}, properties={}, is_folder=False, img='', fanart=art('fanart.png'), total_items=1)
-                
-    xbmcplugin.endOfDirectory(addon_handle)
+	try:
+		file = open(LASTPLAYEDFILE, 'r')
+		#utils.log('FILE OPENED')
+		for line in file:
+			#utils.log('Line read'+line)
+			parts = line.split("||")
+	
+			#file.write(url + DELIM + title + DELIM + video_type + DELIM + primewire_url + DELIM + resume )
+			if len(parts) == 5:
+					url=parts[0]
+					title=parts[1]
+					video_type=parts[2]
+					primewire_url=parts[3]
+					resume=parts[4]
+					utils.log('Last Played  title:' + title + ' and url ' + url)
+					_1CH.add_directory({'mode': MODES.PLAY_SOURCE, 'url': url, 'title': title,'img': '', 'year':'' , 'imdbnum': '','video_type': video_type, 'season': '', 'episode': '', 'primewire_url': primewire_url, 'resume': resume}, infolabels={'title': title+"|"+primewire_url+"|"+url}, properties={}, is_folder=False, img='', fanart=art('fanart.png'), total_items=1)
+	finally:				
+		xbmcplugin.endOfDirectory(addon_handle)
 
 @pw_dispatcher.register(MODES.PLAYLISTS_MENU)
 def playlist_menu():
