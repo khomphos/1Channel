@@ -47,8 +47,12 @@ global urlresolver
 
 addon_handle = int(sys.argv[1])
 base_url = sys.argv[0]
-LASTPLAYEDFILE = "/var/mobile/Library/Preferences/Kodi/userdata/lastplayed.txt"
-TMPLASTPLAY =  "/var/mobile/Library/Preferences/Kodi/userdata/lastplayedtmp.txt"
+
+
+LASTPLAYEDFILE =  xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode('utf-8') + 'lastplayed.txt'
+TMPLASTPLAY =  xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode('utf-8') + 'lastplayedtmp.txt'
+
+
 def build_url(query):
     return base_url + '?' + urllib.urlencode(query)
     

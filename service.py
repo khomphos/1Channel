@@ -25,8 +25,9 @@ from db_utils import DB_Connection
 
 ADDON = xbmcaddon.Addon(id='plugin.video.1channel')
 utils.log('Service: Installed Version: %s' % (ADDON.getAddonInfo('version')))
-LASTPLAYEDFILE = "/var/mobile/Library/Preferences/Kodi/userdata/lastplayed.txt"
-TMPLASTPLAY =  "/var/mobile/Library/Preferences/Kodi/userdata/lastplayedtmp.txt"
+
+LASTPLAYEDFILE =  xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode('utf-8') + 'lastplayed.txt'
+TMPLASTPLAY =  xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode('utf-8') + 'lastplayedtmp.txt'
 
 db_connection = DB_Connection()
 db_connection.init_database()
