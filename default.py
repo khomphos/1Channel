@@ -45,6 +45,8 @@ import gui_utils
 
 global urlresolver
 
+addon_handle = int(sys.argv[1])
+base_url = sys.argv[0]
 LASTPLAYEDFILE = "/var/mobile/Library/Preferences/Kodi/userdata/lastplayed.txt"
 TMPLASTPLAY =  "/var/mobile/Library/Preferences/Kodi/userdata/lastplayedtmp.txt"
 def build_url(query):
@@ -343,7 +345,7 @@ def auto_try_sources(hosters, title, img, year, imdbnum, video_type, season, epi
 
 @pw_dispatcher.register(MODES.PLAY_SOURCE, ['url', ' title', 'video_type', 'primewire_url', 'resume'], ['imdbnum', 'year', 'season', 'episode'])
 def PlaySource(url, title, video_type, primewire_url, resume, imdbnum='', year='', season='', episode='', dbid=None):
-   last utils.log('Attempting to play url: %s' % url)
+    utils.log('Attempting to play url: %s' % url)
     stream_url = urlresolver.HostedMediaFile(url=url).resolve()
     utils.log('Adding to last played tmp file %s' % url)
     file = open(TMPLASTPLAY,"w")
@@ -723,7 +725,7 @@ def BrowseListMenu(section):
 
 @pw_dispatcher.register(MODES.LAST_PLAYED)
 def lastplayed_menu():
-   utils.log('Last Played Menu')
+    utils.log('Last Played Menu')
 
     file = open(LASTPLAYEDFILE, 'r')
     #utils.log('FILE OPENED')
