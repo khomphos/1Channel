@@ -67,18 +67,22 @@ class Service(xbmc.Player):
         with open(TMPLASTPLAY, 'r') as tmpfile:
                 lastplayedurl = tmpfile.read()+'\n'
                 tmpfile.close
+        try:
+			with open(LASTPLAYEDFILE, 'r') as historyfile:
+				history=historyfile.readlines(HISTORYCOUNT)
+				historyfile.close
+		
+		except IOError:
+			utils.log('First item added to history' )
+			history={''}
+			
+		utils.log('Adding last play item '+lastplayedurl )
 
-        with open(LASTPLAYEDFILE, 'r') as historyfile:
-            history=historyfile.readlines(HISTORYCOUNT)
-            historyfile.close
-
-        utils.log('Adding last play item '+lastplayedurl )
-
-        with open(LASTPLAYEDFILE,"w") as fileLASTPLAYED:
-                fileLASTPLAYED.write(lastplayedurl)
-                for lines in history:
-                        fileLASTPLAYED.write(lines)
-                fileLASTPLAYED.close
+		with open(LASTPLAYEDFILE,"w") as fileLASTPLAYED:
+				fileLASTPLAYED.write(lastplayedurl)
+				for lines in history:
+						fileLASTPLAYED.write(lines)
+				fileLASTPLAYED.close
                 
         meta = self.win.getProperty('1ch.playing')
         if meta:  # Playback is ours
