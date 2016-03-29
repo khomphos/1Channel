@@ -83,7 +83,11 @@ class Service(xbmc.Player):
 				for lines in history:
 						fileLASTPLAYED.write(lines)
 				fileLASTPLAYED.close
-                
+        
+		with open(TMPLASTPLAY,"w") as fileTMPLASTPLAYED:                        
+                        fileTMPLASTPLAYED.write("")                             
+                        fileTMPLASTPLAYED.close
+                        
         meta = self.win.getProperty('1ch.playing')
         if meta:  # Playback is ours
             utils.log('Service: tracking progress...')
